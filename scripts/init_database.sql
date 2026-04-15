@@ -11,6 +11,11 @@ WARNING:
     Running this script will drop the entire 'DataWarehouse' database if it exists. 
     All data in the database will be permanently deleted. Proceed with caution 
     and ensure you have proper backups before running this script.
+
+Schema Layers:
+    - bronze: Raw ingested data
+    - silver: Cleaned and transformed data
+    - gold: Business-ready aggregated data
 */
 
 USE master;
@@ -31,12 +36,17 @@ GO
 USE DataWarehouse;
 GO
 
--- Create Schemas
-CREATE SCHEMA bronze;
+-- Create Schemas (only if they don't exist)
+IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'bronze')
+    CREATE SCHEMA bronze;
 GO
 
-CREATE SCHEMA silver;
+IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'silver')
+    CREATE SCHEMA silver;
 GO
 
-CREATE SCHEMA gold;
+IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'gold')
+    CREATE SCHEMA gold;
 GO
+
+PRINT 'Database DataWarehouse initialized successfully with schemas: bronze, silver, gold.';
